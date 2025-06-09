@@ -89,4 +89,15 @@ const seedUsers = async () => {
 	}
 };
 
+userSchema.pre("save", async function (next) {
+  // MAKE SURE TO ADD THIS IF CHECK!!! 👇
+  // only hash if password is modified.
+  if (!this.isModified("password")) {
+    return next();
+  }
+
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
+});
+
 seedUsers();
